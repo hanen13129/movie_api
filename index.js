@@ -6,43 +6,43 @@ let movies = [
 
   {
     title: 'Movie 1',
-    director: 'Diector 1'
+    director: 'Director 1'
   },
   {
     title: 'Movie 2',
-    director: 'Diector 2'
+    director: 'Director 2'
   },
   {
     title: 'Movie 3',
-    director: 'Diector 3'
+    director: 'Director 3'
   },
   {
     title: 'Movie 4',
-    director: 'Diector 4'
+    director: 'Director 4'
   },
   {
     title: ' Movie 5',
-    director: 'Diector 5'
+    director: 'Director 5'
   },
   {
     title: 'Movie 6',
-    director: 'Diector 6'
+    director: 'Director 6'
   },
   {
     title: 'Movie 7',
-    director: 'Diector 7'
+    director: 'Director 7'
   },
   {
     title: 'Movie 8',
-    director: 'Diector 8'
+    director: 'Director 8'
   },
   {
     title: 'Movie 9',
-    director: 'Diector 9'
+    director: 'Director 9'
   },
    {
     title: 'Movie 10',
-    director: 'Diector 10'
+    director: 'Director 10'
   },
 ];
 app.use(morgan('common'));
