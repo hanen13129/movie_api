@@ -1,0 +1,6 @@
+{"_id":{"$oid":"617c383b7b24fd347094fa6e"},"username":"sofia","password":"sofi5","email":"john@gmail.com","Birthday":{"$date":"1988-02-19T00:00:00Z"},"FavoriteMovies":{"$oid":"617af5233ffaaa11337a3bb2"}}
+{"_id":{"$oid":"617c38627b24fd347094fa6f"},"username":"sofia","password":"sofi5","email":"john@gmail.com","Birthday":{"$date":"1988-02-19T00:00:00Z"},"FavoriteMovies":{"$oid":"617af5233ffaaa11337a3bb2"}}
+{"_id":{"$oid":"617c38707b24fd347094fa70"},"username":"sofia","password":"sofi5","email":"john@gmail.com","Birthday":{"$date":"1988-02-19T00:00:00Z"},"FavoriteMovies":{"$oid":"617af5233ffaaa11337a3bb2"}}
+{"_id":{"$oid":"617c38e47b24fd347094fa71"},"username":"sofia","password":"sofi5","email":"john@gmail.com","Birthday":{"$date":"1988-02-19T00:00:00Z"},"FavoriteMovies":{"$oid":"617af5233ffaaa11337a3bb2"}}
+{"_id":{"$oid":"617c38e57b24fd347094fa72"},"username":"themis86","password":"teminhgf","email":"themi@gmail.com","Birthday":{"$date":"1980-02-29T00:00:00Z"},"FavoriteMovies":{"$oid":"617b03203bf43cebe26b9310"}}
+{"_id":{"$oid":"617c39197b24fd347094fa73"},"username":"felixes86","password":"85698f","email":"fekj@gmail.com","Birthday":{"$date":"1970-01-01T00:00:00Z"},"FavoriteMovies":{"$oid":"617b03203bf43cebe26b9310"}}
