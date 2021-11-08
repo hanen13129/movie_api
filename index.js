@@ -14,17 +14,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // const cors = require('cors');2.10
 // app.use(cors());2.10
 // const { check, validationResult } = require('express-validator');2.10
-// let auth = require('./auth')(app);
-// const passport = require('passport');
-// require('./passport');
+
+//calling passport and authorization
+let auth = require('./auth')(app);
+const passport = require('passport');
+const { Module } = require('module');
+require('./passport');
 //exposing files in 'public' folder
 app.use(express.static('public'));
 app.use(morgan('common')); 
+//conntecting to the database 
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // mongoose.connect('mongodb+srv://hanen:1234@myflixdb.rybcf.mongodb.net/myFlixDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
-
+// let myLogger = (req, res, next) => {
+//   console.log(req.url);
+//   next();
+// };
+app.use(myLogger)
 //Get the home page of myFLix App.
 app.get('/', (req, res) => {
   res.send('Welcome to myFlix app!');
@@ -36,17 +44,28 @@ app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
 });
 
-// Get a list of all movies to the users.
-  app.get('/movies', (req, res) => {
-    models.Movie.find()
-      .then((movies) => {
-        res.status(201).json(movies);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(500).send('Error: ' + err);
-      });
-  });
+//get list of all movies
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+  models.Movie.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+// // Get a list of all movies to the users.
+//   app.get('/movies', passport.authenticate('jwt', { session: false }),(req, res) => {
+//     models.Movie.find()
+//       .then((movies) => {
+//         res.status(201).json(movies);
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//         res.status(500).send('Error: ' + err);
+//       });
+//   });
 //Gets the data about a single movie by title
  app.get('/movies/:Title', (req, res) => {
     models.Movie.findOne({Title: req.params.Title})
@@ -167,10 +186,10 @@ app.post('/users',
   //     return res.status(422).json({ errors: errors.array() });
   //   }
   // let hashedPassword = Users.hashPassword(req.body.Password);2.10
-  models.User.findOne({ Username: req.body.Username })
+  models.User.findOne({ username: req.body.Username })
     .then((user) => {
       if (user) {
-        return res.status(400).send(req.body.Username + ' already exists!');
+        return res.status(400).send(req.body.username + ' already exists!');
       } else {
         models.User
           .create({
@@ -205,7 +224,7 @@ app.get('/users/:username', (req, res) => {
     });
 });
 // Update a user info, by username
-app.put('/users/:username', (req, res) => {
+app.put('/users/:username',passport.authenticate("jwt", { session: false }), (req, res) => {
   models.User.findOneAndUpdate({ username: req.params.username }, { $set:
     {
       Username: req.body.Username,
@@ -271,17 +290,6 @@ app.delete('/users/:Username/movies/:MovieID', (req, res) => {
     }
   });
 });
-
-// app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
-//   Movies.find()
-//     .then((movies) => {
-//       res.status(201).json(movies);
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//       res.status(500).send('Error: ' + error);
-//     });
-// });
 
 //adding error-handling middleware
   app.use((err, req, res, next) => {
