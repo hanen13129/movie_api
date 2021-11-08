@@ -9,6 +9,7 @@ const movies = models.Movie;
 const users = models.User;
 const Directors = models.Director;
 const Genres = models.Genre;
+// Using body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // const cors = require('cors');2.10
@@ -18,10 +19,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //calling passport and authorization
 let auth = require('./auth')(app);
 const passport = require('passport');
-const { Module } = require('module');
+// const { Module } = require('module');
 require('./passport');
 //exposing files in 'public' folder
 app.use(express.static('public'));
+// Logging middleware
 app.use(morgan('common')); 
 //conntecting to the database 
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -32,7 +34,7 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, 
 //   console.log(req.url);
 //   next();
 // };
-app.use(myLogger)
+// app.use(myLogger)
 //Get the home page of myFLix App.
 app.get('/', (req, res) => {
   res.send('Welcome to myFlix app!');
@@ -55,19 +57,9 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
       res.status(500).send('Error: ' + error);
     });
 });
-// // Get a list of all movies to the users.
-//   app.get('/movies', passport.authenticate('jwt', { session: false }),(req, res) => {
-//     models.Movie.find()
-//       .then((movies) => {
-//         res.status(201).json(movies);
-//       })
-//       .catch((err) => {
-//         console.error(err);
-//         res.status(500).send('Error: ' + err);
-//       });
-//   });
+
 //Gets the data about a single movie by title
- app.get('/movies/:Title', (req, res) => {
+ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
     models.Movie.findOne({Title: req.params.Title})
     .then((movies) => {
       res.json(movies);
@@ -79,7 +71,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
   });
 
  //Get a list of all genres
-  app.get('/genre', (req, res) => {
+  app.get('/genre',  passport.authenticate('jwt', { session: false }),(req, res) => {
       models.Genre.find()
         .then(genre => {
           res.status(201).json(genre);
