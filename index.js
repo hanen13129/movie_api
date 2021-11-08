@@ -2,69 +2,34 @@ const express = require('express');
 const app = express();
 const morgan = require ('morgan');
 const bodyParser = require('body-parser');
+const uuid = require('uuid');
+const mongoose = require('mongoose');
+const models = require('./models.js');
+const movies = models.Movie;
+const users = models.User;
+const Directors = models.Director;
+const Genres = models.Genre;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+// const cors = require('cors');2.10
+// app.use(cors());2.10
+// const { check, validationResult } = require('express-validator');2.10
+// let auth = require('./auth')(app);
+// const passport = require('passport');
+// require('./passport');
+//exposing files in 'public' folder
 app.use(express.static('public'));
 app.use(morgan('common')); 
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+
+// mongoose.connect('mongodb+srv://hanen:1234@myflixdb.rybcf.mongodb.net/myFlixDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 
-
-
-
-let topMovies = [
-  {
-    title: 'The Shawshank Redemption',
-    genre: ['Prison', 'Drama', 'Crime Fiction'],
-    director: { name: 'Frank Darabot' },
-  },
-  {
-    title: 'The Godfather',
-    genre: ['Mafia', 'Drama', 'Crime Fiction'],
-    director: { name: 'Francis Ford Coppoia' },
-  },
-  {
-    title: 'The Godfather: Part II',
-    genre: ['Mafia', 'Drama', 'Crime Fiction'],
-    director: { name: 'Francis Ford Coppoia' },
-  },
-  {
-    title: '12 Angry Men',
-    genre: ['Drama', 'Trial Drama', 'Crime Film'],
-    director: { name: 'Sidney Lumet' },
-  },
-  {
-    title: 'Schindlers List ',
-    genre: ['War', 'History', 'Black and White'],
-    director: { name: 'Steven Spielberg' },
-  },
-  {
-    title: 'The Lord of the Rings: The Return of the King',
-    genre: ['Novel', 'Fantasy Fiction', 'Adventure Fiction'],
-    director: { name: 'Peter Jackson' },
-  },
-  {
-    title: 'Pulp Fiction',
-    genre: ['Comedy', 'Mafia', 'Crime Film'],
-    director: { name: 'Quentin Tarantino' },
-  },
-  {
-    title: 'The Good, the Bad and the Ugly',
-    genre: ['Spaghetti Western', 'Western', 'Action'],
-    director: { name: 'Sergio Leone' },
-  },
-  {
-    title: 'The Lord of the Rings: The Fellowship of the Ring',
-    genre: ['Novel', 'Fantasy Fiction', 'Adventure Fiction'],
-    director: { name: 'Peter Jackson' },
-  },
-];
-
-// Register New Users.
-let newUsers = [''];
-
-// GET requests
 //Get the home page of myFLix App.
 app.get('/', (req, res) => {
   res.send('Welcome to myFlix app!');
 });
+
 
 // Get Documentation on Request, URL, and Response formats.
 app.get('/documentation', (req, res) => {
@@ -72,60 +37,262 @@ app.get('/documentation', (req, res) => {
 });
 
 // Get a list of all movies to the users.
-app.get('/movies', (req, res) => {
-  res.json(topMovies);
+  app.get('/movies', (req, res) => {
+    models.Movie.find()
+      .then((movies) => {
+        res.status(201).json(movies);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+//Gets the data about a single movie by title
+ app.get('/movies/:Title', (req, res) => {
+    models.Movie.findOne({Title: req.params.Title})
+    .then((movies) => {
+      res.json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ', err);
+    });
+  });
+
+ //Get a list of all genres
+  app.get('/genre', (req, res) => {
+      models.Genre.find()
+        .then(genre => {
+          res.status(201).json(genre);
+        })
+        .catch((err) => {
+          console.error(err);
+          res.status(500).send('Error: ' + err);
+        });
+    });
+
+  //get all movies by genre name
+  app.get('/movies/genre/:Name', (req, res) => {
+    models.Movie.find({ "Genre.Name": req.params.Name})
+    .then((movies) => {
+      res.json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+  });
+    //get all movies by Director name
+  app.get('/movies/director/:Name', (req, res) => {
+    models.Movie.find({ "Director.Name": req.params.Name})
+    .then((movies) => {
+      res.json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+  });
+
+     //get genre by name 
+  app.get('/genres/:Name', (req, res) => {
+    models.Genre.findOne({ "Name": req.params.Name})
+    .then((genre) => {
+      res.json(genre);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+  });
+  //get director by name 
+  app.get('/directors/:Name', (req, res) => {
+    models.Director.findOne({ "Name": req.params.Name})
+    .then((director) => {
+      res.json(director);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+  });
+//get list of all directors
+  app.get('/directors', (req, res) => {
+    models.Director.find()
+      .then((director) => {
+        res.status(201).json(movies);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  });
+
+  //get director info by name
+  app.get('/director/:Name', (req, res) =>{
+    models.Director.findOne({ Name: req.params.Name})
+    .then((director) => {
+      res.json(director);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+  });
+
+//get all users
+  app.get('/users', function (req, res) {
+   models.User.find()
+    .then(function (users) {
+      res.status(201).json(users);
+    })
+    .catch(function (err) {
+      console.error(err);
+      res.status(500).send('Error:' + err);
+    });
+  });
+//adding a new user
+app.post('/users',
+// [ 2.10
+//     check('Username', 'Username is required').isLength({min: 5}),
+//     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+//     check('Password', 'Password is required').not().isEmpty(),
+//     check('Email', 'Email does not appear to be valid').isEmail()
+//   ], 
+(req, res) => {
+  
+  //   let errors = validationResult(req); 2.10
+
+  //   if (!errors.isEmpty()) {
+  //     return res.status(422).json({ errors: errors.array() });
+  //   }
+  // let hashedPassword = Users.hashPassword(req.body.Password);2.10
+  models.User.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + ' already exists!');
+      } else {
+        models.User
+          .create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
-app.get('/movies/:title', (req, res) => {
-  res.send(
-    'Successful GET request returning data about a single movies by title to the user.'
-  );
+
+// Get a user by username
+app.get('/users/:username', (req, res) => {
+  models.User.findOne({ username: req.params.username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+// Update a user info, by username
+app.put('/users/:username', (req, res) => {
+  models.User.findOneAndUpdate({ username: req.params.username }, { $set:
+    {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true }, 
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
-// Return data about a genre (description) by name/title (e.g., “Thriller”).
-app.get('/movies/:title/genre', (req, res) => {
-  res.send('Successful GET request returning data about a genre.');
+// Add a movie to a user's list of favorites
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+  models.User.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, 
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
-// Return data about a director (bio, birth year, death year) by name.
-app.get('/movies/director/:name', (req, res) => {
-  res.send('Successful GET request returning data about a director.');
+// Delete a user by username
+app.delete('/users/:Username', (req, res) => {
+  models.User.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+// Delete a movie from the favorite list of an user
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+  models.User.findOneAndUpdate({Username: req.params.Username}, {
+    $pull: {FavoriteMovies: req.params.MovieID}
+  },
+  {new: true},
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
-// POST Request.
+// app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+//   Movies.find()
+//     .then((movies) => {
+//       res.status(201).json(movies);
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       res.status(500).send('Error: ' + error);
+//     });
+// });
 
-// Allow new users to register.
-app.post('/newUser', (req, res) => {
-  res.send('Successful POST request user was able to register.');
-});
-
-// Allow users to add a movie to their list of favorites (showing only a text that a movie has been added—more on this later)
-app.post('/newUser/:id/favorites', (req, res) => {
-  res.send('Successful POST request movie has been added to favorites.');
-});
-
-// PUT Request.
-
-// Allow users to update their user info (username, password, email, date of birth).
-app.put('/newUser/:id/info', (req, res) => {
-  res.send('Successful PUT request user info updated.');
-});
-
-// DELETE Request.
-
-// Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed—more on this later)
-app.delete('/newUser/:id/favorites', (req, res) => {
-  res.send(
-    'Successful DELETE request movie has been deleted from user list of favorites.'
-  );
-});
-
-// Allow existing users to deregister
-app.delete('/newUser', (req, res) => {
-  res.send('Successful DELETE request existing user has been deregistered.');
-});
-
+//adding error-handling middleware
+  app.use((err, req, res, next) => {
+    console.log(err.stack);
+    res.status(500).send('Something went wrong. Please try again.');
+  });
 // listen for requests
 app.listen(8080, () => {
   console.log('Your app is listening on port 8080.');
 });
+// const port = process.env.PORT || 8080; 2.10 replace the up with this 
+// app.listen(port, '0.0.0.0',() => {
+//  console.log('Listening on Port ' + port);
+// });
