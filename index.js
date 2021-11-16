@@ -178,10 +178,10 @@ app.post('/users',
   //     return res.status(422).json({ errors: errors.array() });
   //   }
   // let hashedPassword = Users.hashPassword(req.body.Password);2.10
-  models.User.findOne({ username: req.body.Username })
+  models.User.findOne({ Username: req.body.Username })
     .then((user) => {
       if (user) {
-        return res.status(400).send(req.body.username + ' already exists!');
+        return res.status(400).send(req.body.Username + ' already exists!');
       } else {
         models.User
           .create({
