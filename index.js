@@ -28,7 +28,7 @@ app.use(morgan('common'));
 //conntecting to the database 
 // mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
-mongoose.connect('mongodb+srv://hanen:1234@myflixdb.rybcf.mongodb.net/myFlixDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect( process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // let myLogger = (req, res, next) => {
 //   console.log(req.url);
