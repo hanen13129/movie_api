@@ -12,9 +12,9 @@ const Genres = models.Genre;
 // Using body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// const cors = require('cors');2.10
-// app.use(cors());2.10
-// const { check, validationResult } = require('express-validator');2.10
+const cors = require('cors');
+app.use(cors());
+ const { check, validationResult } = require('express-validator');
 
 //calling passport and authorization
 let auth = require('./auth')(app);
@@ -26,9 +26,9 @@ app.use(express.static('public'));
 // Logging middleware
 app.use(morgan('common')); 
 //conntecting to the database 
-mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
-// mongoose.connect('mongodb+srv://hanen:1234@myflixdb.rybcf.mongodb.net/myFlixDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://hanen:1234@myflixdb.rybcf.mongodb.net/myFlixDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // let myLogger = (req, res, next) => {
 //   console.log(req.url);
@@ -164,20 +164,20 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) 
   });
 //adding a new user
 app.post('/users',
-// [ 2.10
-//     check('Username', 'Username is required').isLength({min: 5}),
-//     check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-//     check('Password', 'Password is required').not().isEmpty(),
-//     check('Email', 'Email does not appear to be valid').isEmail()
-//   ], 
+[ 
+    check('Username', 'Username is required').isLength({min: 5}),
+    check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail()
+  ], 
 (req, res) => {
   
-  //   let errors = validationResult(req); 2.10
+    let errors = validationResult(req);
 
-  //   if (!errors.isEmpty()) {
-  //     return res.status(422).json({ errors: errors.array() });
-  //   }
-  // let hashedPassword = Users.hashPassword(req.body.Password);2.10
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+  let hashedPassword = Users.hashPassword(req.body.Password);
   models.User.findOne({ Username: req.body.Username })
     .then((user) => {
       if (user) {
@@ -289,10 +289,10 @@ app.delete('/users/:Username/movies/:MovieID', (req, res) => {
     res.status(500).send('Something went wrong. Please try again.');
   });
 // listen for requests
-app.listen(8080, () => {
-  console.log('Your app is listening on port 8080.');
-});
-// const port = process.env.PORT || 8080; 2.10 replace the up with this 
-// app.listen(port, '0.0.0.0',() => {
-//  console.log('Listening on Port ' + port);
+// app.listen(8080, () => {
+//   console.log('Your app is listening on port 8080.');
 // });
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
+});
