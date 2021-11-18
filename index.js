@@ -57,7 +57,7 @@ app.get('/documentation', (req, res) => {
 });
 
 //get list of all movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies', (req, res) => {
   models.Movie.find()
     .then((movies) => {
       res.status(201).json(movies);
