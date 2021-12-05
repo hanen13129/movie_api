@@ -60,7 +60,7 @@ app.get('/documentation', (req, res) => {
 app.get('/movies', (req, res) => {
   models.Movie.find()
     .then((movies) => {
-      res.status(201).json(movies);
+      res.status(200).json(movies);
     })
     .catch((error) => {
       console.error(error);
