@@ -72,7 +72,7 @@ app.get('/movies', (req, res) => {
  app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
     models.Movie.findOne({Title: req.params.Title})
     .then((movies) => {
-      res.json(movies);
+      res.status(201).json(movies);
     })
     .catch((err) => {
       console.error(err);
