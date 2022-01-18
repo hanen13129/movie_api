@@ -216,7 +216,7 @@ app.post('/users',
 
 // Get a user by username
 app.get('/users/:username', (req, res) => {
-  models.User.findOne({ username: req.params.username })
+  models.User.findOne({ Username: req.params.username })
     .then((user) => {
       res.json(user);
     })
