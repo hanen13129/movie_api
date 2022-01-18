@@ -56,6 +56,10 @@ app.get('/documentation', (req, res) => {
   res.sendFile('public/documentation.html', { root: __dirname });
 });
 
+app.get('/images/:id', (req, res) => {
+  res.sendFile('public/images/${req.parms.id}.jpg', { root: __dirname });
+});
+
 //get list of all movies
 app.get('/movies', (req, res) => {
   models.Movie.find()
