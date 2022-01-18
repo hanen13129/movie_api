@@ -227,7 +227,7 @@ app.get('/users/:username', (req, res) => {
 });
 // Update a user info, by username
 app.put('/users/:username',passport.authenticate("jwt", { session: false }), (req, res) => {
-  models.User.findOneAndUpdate({ username: req.params.username }, { $set:
+  models.User.findOneAndUpdate({ Username: req.params.username }, { $set:
     {
       Username: req.body.Username,
       Password: req.body.Password,
